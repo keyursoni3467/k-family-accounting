@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactForm = () => {
   const { toast } = useToast();
@@ -21,25 +22,53 @@ const ContactForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Submit to Supabase
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          business_name: formData.businessName,
+          message: formData.message
+        });
+        
+      if (error) {
+        console.error('Error submitting form:', error);
+        toast({
+          title: "Something went wrong",
+          description: "We couldn't submit your message. Please try again later.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Message Sent Successfully",
+          description: "We'll get back to you as soon as possible.",
+        });
+        
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          businessName: "",
+          message: "",
+        });
+      }
+    } catch (err) {
+      console.error('Exception when submitting form:', err);
       toast({
-        title: "Message Sent Successfully",
-        description: "We'll get back to you as soon as possible.",
+        title: "Something went wrong",
+        description: "We couldn't submit your message. Please try again later.",
+        variant: "destructive"
       });
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        businessName: "",
-        message: "",
-      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -92,7 +121,7 @@ const ContactForm = () => {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">Phone</h3>
-                  <p className="text-white/90">(513) 555-1234</p>
+                  <p className="text-white/90">(513) 602-7740</p>
                 </div>
               </div>
 
