@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calculator } from "lucide-react";
+import { FileCheck, Calculator } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,7 +16,10 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <a href="#" className="flex items-center gap-2">
-              <Calculator className="h-7 w-7 text-kblue-500" />
+              <div className="flex items-center justify-center bg-gradient-to-r from-kblue-500 to-kblue-700 p-2 rounded-md">
+                <FileCheck className="h-5 w-5 text-white" />
+                <Calculator className="h-5 w-5 text-white ml-0.5" />
+              </div>
               <span className="text-xl font-bold font-poppins text-gray-900">K Family Accounting</span>
             </a>
           </div>
